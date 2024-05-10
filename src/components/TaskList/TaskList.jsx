@@ -1,23 +1,22 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Task from './Task';
 
-const TaskList = ({tasks}) => {
-  const taskItem = tasks.map((task) => {
-    const { id, ...itemProps } = task;
-   return ( 
-   <li key={id} className="completed">
-      <Task { ...itemProps } />
-    </li>
-   );
-});
+export default class TaskList extends Component {
+  render() {
+    const { tasks , onDelete } = this.props;
+
+    const taskItem = tasks.map((task) => {
+      const { id, ...itemProps } = task;
+       return ( 
+          <Task key={id} { ...itemProps } 
+         onDelete = {() => onDelete(id)} />
+      );
+    });
 
     return (
-     <section className="main">
       <ul className="todo-list">
       {taskItem}
       </ul>
-      </section>
     );
   };
-
-export default TaskList;
+}
