@@ -4,25 +4,52 @@ import NewTaskForm from './components/NewTaskForm/NewTaskForm';
 import Footer from './components/Footer/Footer';
 
 export default class App extends Component {
+  maxId = 100;
   state = {
     tasks: [
-      { id: 1, label: "Completed task", created: "created 17 seconds ago", completed: true },
-      { id: 2, label: "Editing task", created: "created 5 minutes ago", completed: true },
-      { id: 3, label: "Active task", created: "created 5 minutes ago", completed: true }
+      this.createTaskItem("Completed task"),
+      this.createTaskItem("Editing task"),
+      this.createTaskItem("Active task")
       ]
   };
+
+  createTaskItem(label) {
+    return {
+      label,
+      completed: false,
+      id: this.maxId++,
+    };
+  };
+
+  addItem = (text) => {
+    this.setState(({ tasks }) => ({
+      tasks: [...tasks, this.createTaskItem(text)]
+    }));
+  };
+
   deleteItem = (id) => {
     this.setState(({ tasks }) => ({
       tasks: tasks.filter((task) => task.id !== id)
     }));
   };
 
+  toggleProperty(arr, id, propName) {
+    return arr.map(item => (item.id === id ? { ...item, [propName]: !item[propName] } : item));
+  }
+
+  onToggleCompleted = (id) => {
+    this.setState(({ tasks }) => ({
+      tasks: this.toggleProperty(tasks, id, 'completed')
+    }));
+  };
+
   render() {
+    const { tasks } = this.state;
     return (
       <div className="todoapp">
-      <NewTaskForm />
-      <TaskList tasks={this.state.tasks} onDelete={this.deleteItem}/>
-      <Footer />
+      <NewTaskForm onItemAdd={this.addItem}/>
+      <TaskList tasks={tasks} onDelete={this.deleteItem} onToggleCompleted ={this.onToggleCompleted}/>
+      <Footer onRemaining={tasks.filter((el) => !el.completed).length}/>
     </div>
     );
   }

@@ -1,10 +1,10 @@
 import React from 'react';
 import TasksFilter from './TasksFilter';
 
-const Footer = () => {
+const Footer = ({onRemaining}) => {
     return (
       <footer className="footer">
-        <span className="todo-count"> items left</span>
+        <span className="todo-count"> {onRemaining} items left</span>
         <TasksFilter />
         <button className="clear-completed">Clear completed</button>
       </footer>
