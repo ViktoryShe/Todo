@@ -10,7 +10,13 @@ export default class App extends Component {
       this.createTaskItem("Completed task"),
       this.createTaskItem("Editing task"),
       this.createTaskItem("Active task")
-      ]
+    ],
+    filter: 'All',
+    buttons: [
+      { label: "All" },
+      { label: "Active" },
+      { label: "Completed" }
+    ]
   };
 
   createTaskItem(label) {
@@ -33,6 +39,12 @@ export default class App extends Component {
     }));
   };
 
+  deleteCompleted = () => {
+    this.setState(({ tasks }) => ({
+      tasks: tasks.filter((task) => !task.completed)
+    }));
+  };
+
   toggleProperty(arr, id, propName) {
     return arr.map(item => (item.id === id ? { ...item, [propName]: !item[propName] } : item));
   }
@@ -43,13 +55,36 @@ export default class App extends Component {
     }));
   };
 
+  filterItems(items, filter) {
+    switch(filter) {
+      case 'All': 
+        return items;
+      case 'Active': 
+        return items.filter((item) => !item.completed);
+      case 'Completed': 
+        return items.filter((item) => item.completed);
+      default: 
+        return items;
+    }
+  }
+
+  onFilterChange = (filter) => {
+    this.setState({ filter });
+  };
+
   render() {
-    const { tasks } = this.state;
+    const { tasks, filter, buttons } = this.state;
     return (
       <div className="todoapp">
       <NewTaskForm onItemAdd={this.addItem}/>
-      <TaskList tasks={tasks} onDelete={this.deleteItem} onToggleCompleted ={this.onToggleCompleted}/>
-      <Footer onRemaining={tasks.filter((el) => !el.completed).length}/>
+      <TaskList tasks={this.filterItems(tasks, filter)} 
+      onDelete={this.deleteItem} 
+      onToggleCompleted ={this.onToggleCompleted}/>
+      <Footer onRemaining={tasks.filter((el) => !el.completed).length}
+       filter={filter} 
+       onFilterChange={this.onFilterChange} 
+       buttons={buttons} 
+       onDeleteCompleted={this.deleteCompleted}/>
     </div>
     );
   }

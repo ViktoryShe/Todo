@@ -3,8 +3,7 @@ import React, { Component } from 'react';
 export default class Task extends Component {
 
   render() {
-    const { label, created, onDelete, onToggleCompleted, 
-      completed } = this.props;
+    const { label, created, onDelete, onToggleCompleted, completed } = this.props;
 
     let classNames = "view";
 
