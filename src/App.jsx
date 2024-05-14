@@ -45,13 +45,16 @@ export default class App extends Component {
     }));
   };
 
-  toggleProperty(arr, id, propName) {
-    return arr.map(item => (item.id === id ? { ...item, [propName]: !item[propName] } : item));
-  }
-
   onToggleCompleted = (id) => {
     this.setState(({ tasks }) => ({
-      tasks: this.toggleProperty(tasks, id, 'completed')
+      tasks: tasks.map(item => {
+        if (item.id === id) {
+          return {
+            ...item, 
+            completed: !item.completed};
+        }
+        return item;
+      })
     }));
   };
 
