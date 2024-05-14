@@ -13,3 +13,9 @@ export default class Footer extends Component {
    );
   }
 }
+Footer.defaultProps = {
+  buttons: [], 
+  filter: 'All', 
+  onDeleteCompleted: () => {},
+  onFilterChange: () => {}
+};

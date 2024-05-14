@@ -20,3 +20,8 @@ export default class TasksFilter extends Component {
     );
   }
 }
+TasksFilter.defaultProps = {
+    buttons: [], 
+    filter: 'All', 
+    onFilterChange: () => {}
+  };

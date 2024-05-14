@@ -21,3 +21,9 @@ export default class TaskList extends Component {
     );
   };
 }
+
+TaskList.defaultProps = {
+  tasks: [],
+  onDelete: () => {},
+  onToggleCompleted: () => {}
+};

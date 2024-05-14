@@ -12,7 +12,7 @@ export default class Task extends Component {
     }
 
     return (
-      <li className={classNames} onClick={() => onToggleCompleted()}>
+      <li className={classNames} onClick={onToggleCompleted}>
         <div className="view">
           <input className="toggle" type="checkbox"checked={completed} readOnly/>
           <label>
@@ -26,4 +26,10 @@ export default class Task extends Component {
     );
   }
 }
-
+Task.defaultProps = {
+  label: '',
+  created: '',
+  onDelete: () => {},
+  onToggleCompleted: () => {},
+  completed: false,
+};
