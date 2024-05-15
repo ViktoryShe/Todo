@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Task from './Task';
+import PropTypes from 'prop-types';
 
 export default class TaskList extends Component {
   render() {
@@ -26,4 +27,16 @@ TaskList.defaultProps = {
   tasks: [],
   onDelete: () => {},
   onToggleCompleted: () => {}
+};
+
+Task.propTypes = {
+  onDelete: PropTypes.func.isRequired,
+  onToggleCompleted: PropTypes.func.isRequired,
+  tasks: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      label: PropTypes.string.isRequired,
+      completed: PropTypes.bool.isRequired
+    })
+  ).isRequired,
 };
