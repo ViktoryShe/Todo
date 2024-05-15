@@ -6,14 +6,15 @@ export default class Footer extends Component {
   render() {
     const { onRemaining, filter, onFilterChange, buttons, onDeleteCompleted } = this.props;
     return (
-      <footer className="footer">
-        <span className="todo-count"> {onRemaining} items left</span>
-        <TasksFilter  filter={filter} onFilterChange={onFilterChange} buttons={buttons}/>
-        <button className="clear-completed" onClick={onDeleteCompleted}>Clear completed</button>
+      <footer className='footer'>
+        <span className='todo-count'>{onRemaining} items left</span>
+        <TasksFilter filter={filter} onFilterChange={onFilterChange} buttons={buttons} />
+        <button className='clear-completed' onClick={onDeleteCompleted}>Clear completed</button>
       </footer>
    );
   }
 }
+
 Footer.defaultProps = {
   buttons: [], 
   filter: 'All', 
@@ -23,7 +24,7 @@ Footer.defaultProps = {
 
 Footer.propTypes = {
   onRemaining: PropTypes.number.isRequired,
-  filter: PropTypes.oneOf(["All", "Active", "Completed"]),  
+  filter: PropTypes.oneOf(['All', 'Active', 'Completed']),  
   onDeleteCompleted: PropTypes.func.isRequired,
   onFilterChange: PropTypes.func.isRequired,
   buttons: PropTypes.arrayOf(

@@ -2,20 +2,21 @@ import React, { Component } from 'react';
 import TaskList from './components/TaskList/TaskList';
 import NewTaskForm from './components/NewTaskForm/NewTaskForm';
 import Footer from './components/Footer/Footer';
+import { formatDistanceToNow } from 'date-fns';
 
 export default class App extends Component {
   maxId = 100;
   state = {
     tasks: [
-      this.createTaskItem("Completed task"),
-      this.createTaskItem("Editing task"),
-      this.createTaskItem("Active task")
+      this.createTaskItem('Completed task'),
+      this.createTaskItem('Editing task'),
+      this.createTaskItem('Active task')
     ],
     filter: 'All',
     buttons: [
-      { label: "All" },
-      { label: "Active" },
-      { label: "Completed" }
+      { label: 'All' },
+      { label: 'Active' },
+      { label: 'Completed' }
     ]
   };
 
@@ -23,9 +24,11 @@ export default class App extends Component {
     return {
       label,
       completed: false,
+      editing: false,
       id: this.maxId++,
+      created: new Date().toISOString()
     };
-  };
+  }
 
   addItem = (text) => {
     this.setState(({ tasks }) => ({
@@ -51,14 +54,29 @@ export default class App extends Component {
         if (item.id === id) {
           return {
             ...item, 
-            completed: !item.completed};
+            completed: !item.completed
+          };
         }
         return item;
       })
     }));
   };
+  
+  editItem = (id, text) => {
+    this.setState(({ tasks }) => ({
+      tasks: tasks.map(task => {
+        if (task.id === id) {
+          return {
+            ...task,
+            label: text
+          };
+        }
+        return task;
+      })
+    }));
+  };
 
-  filterItems(items, filter) {
+  filterItems = (items, filter) => {
     switch(filter) {
       case 'All': 
         return items;
@@ -69,28 +87,35 @@ export default class App extends Component {
       default: 
         return items;
     }
-  }
+  };
 
   onFilterChange = (filter) => {
     this.setState({ filter });
   };
 
+  formatTimeDifference = (created) => {
+    const distance = formatDistanceToNow(new Date(created), { addSuffix: true });
+    return `created ${distance}`;
+  };
+
   render() {
     const { tasks, filter, buttons } = this.state;
     return (
-      <div className="todoapp">
-      <NewTaskForm onItemAdd={this.addItem}/>
-      <TaskList tasks={this.filterItems(tasks, filter)} 
-      onDelete={this.deleteItem} 
-      onToggleCompleted ={this.onToggleCompleted}/>
-      <Footer onRemaining={tasks.filter((el) => !el.completed).length}
-       filter={filter} 
-       onFilterChange={this.onFilterChange} 
-       buttons={buttons} 
-       onDeleteCompleted={this.deleteCompleted}/>
-    </div>
+      <div className='todoapp'>
+        <NewTaskForm onItemAdd={this.addItem}/>
+        <TaskList tasks={this.filterItems(tasks, filter)} 
+          onDelete={this.deleteItem} 
+          onToggleCompleted ={this.onToggleCompleted}
+          formatTimeDifference={this.formatTimeDifference}
+          editItem={this.editItem}/>
+        <Footer onRemaining={tasks.filter((el) => !el.completed).length}
+         filter={filter} 
+         onFilterChange={this.onFilterChange} 
+         buttons={buttons} 
+         onDeleteCompleted={this.deleteCompleted}/>
+      </div>
     );
   }
-};
+}
 
 

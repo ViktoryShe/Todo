@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 
 export default class TasksFilter extends Component {
   render() {
-    const { filter, onFilterChange, buttons} = this.props;
+    const { filter, onFilterChange, buttons } = this.props; 
 
     return (
-      <ul className="filters">
-          {buttons.map(({ label }) => (
+      <ul className='filters'>
+        {buttons.map(({ label }) => (
           <li key={label}>
             <button
-              type="button"
+              type='button'
               onClick={() => onFilterChange(label)}
-              className={filter === label ? "selected" : null}>
+              className={filter === label ? 'selected' : null}>
               {label}
             </button>
           </li>
@@ -21,18 +21,19 @@ export default class TasksFilter extends Component {
     );
   }
 }
-TasksFilter.defaultProps = {
-    buttons: [], 
-    filter: 'All', 
-    onFilterChange: () => {}
-  };
 
-  TasksFilter.propTypes = {
-    filter: PropTypes.oneOf(["All", "Active", "Completed"]), 
-    onFilterChange: PropTypes.func.isRequired,
-    buttons: PropTypes.arrayOf(
-      PropTypes.shape({
-        label: PropTypes.string.isRequired,
-      })
-    ).isRequired,
-  };
+TasksFilter.defaultProps = {
+  buttons: [], 
+  filter: 'All',
+  onFilterChange: () => {}
+};
+
+TasksFilter.propTypes = {
+  filter: PropTypes.oneOf(['All', 'Active', 'Completed']), 
+  onFilterChange: PropTypes.func.isRequired,
+  buttons: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+};
