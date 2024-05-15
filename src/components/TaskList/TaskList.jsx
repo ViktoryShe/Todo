@@ -6,14 +6,16 @@ export default class TaskList extends Component {
   render() {
     const { tasks, onDelete, onToggleCompleted, formatTimeDifference, editItem } = this.props;
 
-    const taskItem = tasks.map(({ id, ...itemProps }) => ( 
-      <Task key={id} {...itemProps} 
-        onDelete={() => onDelete(id)} 
-        onToggleCompleted={() => onToggleCompleted(id)}
-        formatTimeDifference={formatTimeDifference} 
-        editItem={(value) => editItem(id, value)}
-      />
-    ));
+    const taskItem = tasks.map((task) => {
+      const { id, ...itemProps } = task;
+      return ( 
+        <Task key={id} id={id} {...itemProps} 
+          onDelete={() => onDelete(id)} 
+          onToggleCompleted={() => onToggleCompleted(id)}
+          formatTimeDifference={formatTimeDifference} 
+          editItem={(value) => editItem(id, value)}/>
+      );
+    });
 
     return (
       <ul className='todo-list'>
