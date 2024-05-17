@@ -10,11 +10,7 @@ export default class App extends Component {
     super(props)
     this.maxId = 100
     this.state = {
-      tasks: [
-        this.createTaskItem('Completed task'),
-        this.createTaskItem('Editing task'),
-        this.createTaskItem('Active task'),
-      ],
+      tasks: [],
       filter: 'All',
       buttons: [{ label: 'All' }, { label: 'Active' }, { label: 'Completed' }],
     }
