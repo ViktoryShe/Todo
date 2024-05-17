@@ -1,24 +1,24 @@
-import React, { Component } from 'react';
-import TaskList from './components/TaskList/TaskList';
-import NewTaskForm from './components/NewTaskForm/NewTaskForm';
-import Footer from './components/Footer/Footer';
-import { formatDistanceToNow } from 'date-fns';
+import React, { Component } from 'react'
+import { formatDistanceToNow } from 'date-fns'
+
+import TaskList from './components/TaskList/TaskList'
+import NewTaskForm from './components/NewTaskForm/NewTaskForm'
+import Footer from './components/Footer/Footer'
 
 export default class App extends Component {
-  maxId = 100;
-  state = {
-    tasks: [
-      this.createTaskItem('Completed task'),
-      this.createTaskItem('Editing task'),
-      this.createTaskItem('Active task')
-    ],
-    filter: 'All',
-    buttons: [
-      { label: 'All' },
-      { label: 'Active' },
-      { label: 'Completed' }
-    ]
-  };
+  constructor(props) {
+    super(props)
+    this.maxId = 100
+    this.state = {
+      tasks: [
+        this.createTaskItem('Completed task'),
+        this.createTaskItem('Editing task'),
+        this.createTaskItem('Active task'),
+      ],
+      filter: 'All',
+      buttons: [{ label: 'All' }, { label: 'Active' }, { label: 'Completed' }],
+    }
+  }
 
   createTaskItem(label) {
     return {
@@ -26,96 +26,97 @@ export default class App extends Component {
       completed: false,
       editing: false,
       id: this.maxId++,
-      created: new Date().toISOString()
-    };
+      created: new Date().toISOString(),
+    }
   }
 
   addItem = (text) => {
     this.setState(({ tasks }) => ({
-      tasks: [...tasks, this.createTaskItem(text)]
-    }));
-  };
+      tasks: [...tasks, this.createTaskItem(text)],
+    }))
+  }
 
   deleteItem = (id) => {
     this.setState(({ tasks }) => ({
-      tasks: tasks.filter((task) => task.id !== id)
-    }));
-  };
+      tasks: tasks.filter((task) => task.id !== id),
+    }))
+  }
 
   deleteCompleted = () => {
     this.setState(({ tasks }) => ({
-      tasks: tasks.filter((task) => !task.completed)
-    }));
-  };
+      tasks: tasks.filter((task) => !task.completed),
+    }))
+  }
 
   onToggleCompleted = (id) => {
     this.setState(({ tasks }) => ({
-      tasks: tasks.map(item => {
+      tasks: tasks.map((item) => {
         if (item.id === id) {
           return {
-            ...item, 
-            completed: !item.completed
-          };
+            ...item,
+            completed: !item.completed,
+          }
         }
-        return item;
-      })
-    }));
-  };
-  
+        return item
+      }),
+    }))
+  }
+
   editItem = (id, text) => {
     this.setState(({ tasks }) => ({
-      tasks: tasks.map(task => {
+      tasks: tasks.map((task) => {
         if (task.id === id) {
           return {
             ...task,
-            label: text
-          };
+            label: text,
+          }
         }
-        return task;
-      })
-    }));
-  };
+        return task
+      }),
+    }))
+  }
 
   filterItems = (items, filter) => {
-    switch(filter) {
-      case 'All': 
-        return items;
-      case 'Active': 
-        return items.filter((item) => !item.completed);
-      case 'Completed': 
-        return items.filter((item) => item.completed);
-      default: 
-        return items;
+    if (filter === 'All') {
+      return items
+    } else if (filter === 'Active') {
+      return items.filter((item) => !item.completed)
+    } else if (filter === 'Completed') {
+      return items.filter((item) => item.completed)
+    } else {
+      return items
     }
-  };
+  }
 
   onFilterChange = (filter) => {
-    this.setState({ filter });
-  };
+    this.setState({ filter })
+  }
 
   formatTimeDifference = (created) => {
-    const distance = formatDistanceToNow(new Date(created), { addSuffix: true });
-    return `created ${distance}`;
-  };
+    const distance = formatDistanceToNow(new Date(created), { addSuffix: true })
+    return `created ${distance}`
+  }
 
   render() {
-    const { tasks, filter, buttons } = this.state;
+    const { tasks, filter, buttons } = this.state
     return (
-      <div className='todoapp'>
-        <NewTaskForm onItemAdd={this.addItem}/>
-        <TaskList tasks={this.filterItems(tasks, filter)} 
-          onDelete={this.deleteItem} 
-          onToggleCompleted ={this.onToggleCompleted}
+      <div className="todoapp">
+        <NewTaskForm onItemAdd={this.addItem} />
+        <TaskList
+          tasks={this.filterItems(tasks, filter)}
+          onDelete={this.deleteItem}
+          onToggleCompleted={this.onToggleCompleted}
           formatTimeDifference={this.formatTimeDifference}
-          editItem={this.editItem}/>
-        <Footer onRemaining={tasks.filter((el) => !el.completed).length}
-         filter={filter} 
-         onFilterChange={this.onFilterChange} 
-         buttons={buttons} 
-         onDeleteCompleted={this.deleteCompleted}/>
+          editItem={this.editItem}
+        />
+        <Footer
+          onRemaining={tasks.filter((el) => !el.completed).length}
+          filter={filter}
+          onFilterChange={this.onFilterChange}
+          buttons={buttons}
+          onDeleteCompleted={this.deleteCompleted}
+        />
       </div>
-    );
+    )
   }
 }
-
-
