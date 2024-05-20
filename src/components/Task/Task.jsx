@@ -1,6 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import './Task.css'
+import { formatDistanceToNow } from 'date-fns'
+
+const formatTimeDifference = (created) => {
+  const distance = formatDistanceToNow(new Date(created), { addSuffix: true })
+  return `created ${distance}`
+}
 
 export default class Task extends Component {
   state = {
@@ -27,7 +34,7 @@ export default class Task extends Component {
   }
 
   render() {
-    const { label, created, onDelete, onToggleCompleted, completed, formatTimeDifference } = this.props
+    const { label, created, onDelete, onToggleCompleted, completed } = this.props
     const { editing, value } = this.state
     const listItemClasses = classNames({
       completed: completed,
@@ -61,7 +68,6 @@ Task.defaultProps = {
   onDelete: () => {},
   onToggleCompleted: () => {},
   completed: false,
-  formatTimeDifference: () => {},
   editItem: () => {},
 }
 
@@ -71,7 +77,6 @@ Task.propTypes = {
   onDelete: PropTypes.func.isRequired,
   onToggleCompleted: PropTypes.func.isRequired,
   completed: PropTypes.bool,
-  formatTimeDifference: PropTypes.func,
   id: PropTypes.number.isRequired,
   editItem: PropTypes.func.isRequired,
 }

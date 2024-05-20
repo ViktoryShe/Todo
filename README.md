@@ -112,4 +112,11 @@ TODO App #5
 3. Отформатируйте ваш проект и устраните все ошибки
 4. Настройке husky + lint-staged
 5. Выгрузите свое приложение на Vercel (ex now.sh)
+
+доп. ошибки 
+1. Стили нужно разбить по компонентам.
+2. Для каждого компонента и его файлов нужно создавать отдельную папку.
+3. https://github.com/ViktoryShe/Todo/blob/main/src/App.jsx#L15 эти данные не нужно хранить в стейте компонента App.
+4. https://github.com/ViktoryShe/Todo/blob/main/src/App.jsx#L91C1-L94C4 этот метод не нужен в компоненте App.
+5. https://github.com/ViktoryShe/Todo/blob/main/src/components/TaskList/TaskList.jsx#L10 не нужно складывать тяжеловесные объекты jsx в переменные. Их стоит создавать в разметке. Плюс структурно такой код будет более читаем.
 -->

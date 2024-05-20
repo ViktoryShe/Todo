@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import './NewTaskForm.css'
 
 export default class NewTaskForm extends Component {
   state = {

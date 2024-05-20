@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { formatDistanceToNow } from 'date-fns'
+import './App.css'
 
 import TaskList from './components/TaskList/TaskList'
 import NewTaskForm from './components/NewTaskForm/NewTaskForm'
@@ -12,7 +12,6 @@ export default class App extends Component {
     this.state = {
       tasks: [],
       filter: 'All',
-      buttons: [{ label: 'All' }, { label: 'Active' }, { label: 'Completed' }],
     }
   }
 
@@ -88,13 +87,8 @@ export default class App extends Component {
     this.setState({ filter })
   }
 
-  formatTimeDifference = (created) => {
-    const distance = formatDistanceToNow(new Date(created), { addSuffix: true })
-    return `created ${distance}`
-  }
-
   render() {
-    const { tasks, filter, buttons } = this.state
+    const { tasks, filter } = this.state
     return (
       <div className="todoapp">
         <NewTaskForm onItemAdd={this.addItem} />
@@ -102,14 +96,12 @@ export default class App extends Component {
           tasks={this.filterItems(tasks, filter)}
           onDelete={this.deleteItem}
           onToggleCompleted={this.onToggleCompleted}
-          formatTimeDifference={this.formatTimeDifference}
           editItem={this.editItem}
         />
         <Footer
           onRemaining={tasks.filter((el) => !el.completed).length}
           filter={filter}
           onFilterChange={this.onFilterChange}
-          buttons={buttons}
           onDeleteCompleted={this.deleteCompleted}
         />
       </div>

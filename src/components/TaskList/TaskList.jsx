@@ -1,28 +1,30 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import './TaskList.css'
 
-import Task from './Task'
+import Task from '../Task/Task'
 
 export default class TaskList extends Component {
   render() {
-    const { tasks, onDelete, onToggleCompleted, formatTimeDifference, editItem } = this.props
+    const { tasks, onDelete, onToggleCompleted, editItem } = this.props
 
-    const taskItem = tasks.map((task) => {
-      const { id, ...itemProps } = task
-      return (
-        <Task
-          key={id}
-          id={id}
-          {...itemProps}
-          onDelete={() => onDelete(id)}
-          onToggleCompleted={() => onToggleCompleted(id)}
-          formatTimeDifference={formatTimeDifference}
-          editItem={(value) => editItem(id, value)}
-        />
-      )
-    })
-
-    return <ul className="todo-list">{taskItem}</ul>
+    return (
+      <ul className="todo-list">
+        {tasks.map((task) => {
+          const { id, ...itemProps } = task
+          return (
+            <Task
+              key={id}
+              id={id}
+              {...itemProps}
+              onDelete={() => onDelete(id)}
+              onToggleCompleted={() => onToggleCompleted(id)}
+              editItem={(value) => editItem(id, value)}
+            />
+          )
+        })}
+      </ul>
+    )
   }
 }
 
@@ -30,7 +32,6 @@ TaskList.defaultProps = {
   tasks: [],
   onDelete: () => {},
   onToggleCompleted: () => {},
-  formatTimeDifference: () => {},
   editItem: () => {},
 }
 
@@ -45,6 +46,5 @@ TaskList.propTypes = {
       created: PropTypes.string.isRequired,
     })
   ).isRequired,
-  formatTimeDifference: PropTypes.func,
   editItem: PropTypes.func.isRequired,
 }
