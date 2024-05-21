@@ -1,13 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import './Task.css'
-import { formatDistanceToNow } from 'date-fns'
 
-const formatTimeDifference = (created) => {
-  const distance = formatDistanceToNow(new Date(created), { addSuffix: true })
-  return `created ${distance}`
-}
+import './Task.css'
+import { formatTimeDifference } from '../../utils'
 
 export default class Task extends Component {
   state = {
