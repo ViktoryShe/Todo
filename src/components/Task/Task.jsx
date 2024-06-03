@@ -21,7 +21,7 @@ export default class Task extends Component {
     e.preventDefault()
     const { editItem } = this.props
     const { value } = this.state
-    editItem(value)
+    editItem(this.props.id, value)
     this.setState({ editing: false })
   }
 
@@ -29,9 +29,28 @@ export default class Task extends Component {
     this.setState({ value: event.target.value })
   }
 
+  handlePlayTimer = (e) => {
+    e.stopPropagation()
+    const { id, startTimer } = this.props
+    startTimer(id)
+  }
+
+  handleStopTimer = (e) => {
+    e.stopPropagation()
+    const { id, stopTimer } = this.props
+    stopTimer(id)
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.label !== this.props.label) {
+      this.setState({ value: this.props.label })
+    }
+  }
+
   render() {
-    const { label, created, onDelete, onToggleCompleted, completed } = this.props
+    const { label, created, onDelete, onToggleCompleted, completed, min, sec } = this.props
     const { editing, value } = this.state
+    const timeDifference = formatTimeDifference(created)
     const listItemClasses = classNames({
       completed: completed,
       editing: editing,
@@ -43,7 +62,14 @@ export default class Task extends Component {
           <input className="toggle" type="checkbox" checked={completed} readOnly />
           <label>
             <span className="description">{label} </span>
-            <span className="created">{formatTimeDifference(created)}</span>
+            <span className="description">
+              <button className="icon icon-play" onClick={this.handlePlayTimer}></button>
+              <button className="icon icon-pause" onClick={this.handleStopTimer}></button>
+              <span className="timer">
+                {min}:{sec}
+              </span>
+            </span>
+            <span className="created description">{timeDifference}</span>
           </label>
           <button className="icon icon-edit" onClick={this.handleToggleEditing}></button>
           <button className="icon icon-destroy" onClick={onDelete}></button>
@@ -65,6 +91,8 @@ Task.defaultProps = {
   onToggleCompleted: () => {},
   completed: false,
   editItem: () => {},
+  startTimer: () => {},
+  stopTimer: () => {},
 }
 
 Task.propTypes = {
@@ -75,4 +103,8 @@ Task.propTypes = {
   completed: PropTypes.bool,
   id: PropTypes.number.isRequired,
   editItem: PropTypes.func.isRequired,
+  min: PropTypes.number.isRequired,
+  sec: PropTypes.number.isRequired,
+  startTimer: PropTypes.func.isRequired,
+  stopTimer: PropTypes.func.isRequired,
 }

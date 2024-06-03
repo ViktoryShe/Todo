@@ -15,19 +15,82 @@ export default class App extends Component {
     }
   }
 
-  createTaskItem(label) {
+  startTimer = (id) => {
+    this.setState((prevState) => {
+      const updatedTaskData = prevState.tasks.map((task) => {
+        if (task.id === id && !task.timerRunning) {
+          const intervalId = setInterval(() => {
+            this.setState((prevState) => {
+              const updatedData = prevState.tasks.map((t) => {
+                if (t.id === id) {
+                  if (t.sec > 0) {
+                    t.sec -= 1
+                  } else if (t.min > 0) {
+                    t.sec = 59
+                    t.min -= 1
+                  } else {
+                    clearInterval(task.intervalId)
+                    t.timerRunning = false
+                  }
+                }
+                return t
+              })
+              return { tasks: updatedData }
+            })
+          }, 1000)
+
+          return { ...task, timerRunning: true, intervalId }
+        }
+        return task
+      })
+
+      return { tasks: updatedTaskData }
+    })
+  }
+
+  stopTimer = (id) => {
+    this.setState(({ tasks }) => {
+      const newArray = tasks.map((task) => {
+        if (task.id === id && task.timerRunning) {
+          clearInterval(task.intervalId)
+          task.timerRunning = false
+        }
+        return task
+      })
+      return { tasks: newArray }
+    })
+  }
+
+  createTaskItem(label, min, sec) {
+    const createdData = new Date()
+    const id = this.maxId++
+
     return {
+      id,
       label,
-      completed: false,
+      min,
+      sec,
+      createdData,
       editing: false,
-      id: this.maxId++,
+      completed: false,
       created: new Date().toISOString(),
+      timerRunning: false,
+      intervalId: null,
     }
   }
 
-  addItem = (text) => {
+  componentWillUnmount() {
+    const { tasks } = this.state
+    tasks.forEach((task) => {
+      if (task.timerRunning) {
+        clearInterval(task.intervalId)
+      }
+    })
+  }
+
+  addItem = (text, min, sec) => {
     this.setState(({ tasks }) => ({
-      tasks: [...tasks, this.createTaskItem(text)],
+      tasks: [...tasks, this.createTaskItem(text, min, sec)],
     }))
   }
 
@@ -58,8 +121,12 @@ export default class App extends Component {
   }
 
   editItem = (id, text) => {
-    this.setState(({ tasks }) => ({
-      tasks: tasks.map((task) => {
+    if (typeof text !== 'string') {
+      console.error('Label is not a string:', text)
+      return
+    }
+    this.setState((prevState) => ({
+      tasks: prevState.tasks.map((task) => {
         if (task.id === id) {
           return {
             ...task,
@@ -97,6 +164,8 @@ export default class App extends Component {
           onDelete={this.deleteItem}
           onToggleCompleted={this.onToggleCompleted}
           editItem={this.editItem}
+          startTimer={this.startTimer}
+          stopTimer={this.stopTimer}
         />
         <Footer
           onRemaining={tasks.filter((el) => !el.completed).length}

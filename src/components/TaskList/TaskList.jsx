@@ -6,7 +6,7 @@ import Task from '../Task/Task'
 
 export default class TaskList extends Component {
   render() {
-    const { tasks, onDelete, onToggleCompleted, editItem } = this.props
+    const { tasks, onDelete, onToggleCompleted, editItem, startTimer, stopTimer } = this.props
 
     return (
       <ul className="todo-list">
@@ -20,6 +20,8 @@ export default class TaskList extends Component {
               onDelete={() => onDelete(id)}
               onToggleCompleted={() => onToggleCompleted(id)}
               editItem={(value) => editItem(id, value)}
+              startTimer={() => startTimer(id)}
+              stopTimer={() => stopTimer(id)}
             />
           )
         })}
@@ -33,6 +35,8 @@ TaskList.defaultProps = {
   onDelete: () => {},
   onToggleCompleted: () => {},
   editItem: () => {},
+  startTimer: () => {},
+  stopTimer: () => {},
 }
 
 TaskList.propTypes = {
@@ -47,4 +51,6 @@ TaskList.propTypes = {
     })
   ).isRequired,
   editItem: PropTypes.func.isRequired,
+  startTimer: PropTypes.func.isRequired,
+  stopTimer: PropTypes.func.isRequired,
 }
