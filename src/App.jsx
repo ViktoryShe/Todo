@@ -13,6 +13,7 @@ export default class App extends Component {
       tasks: [],
       filter: 'All',
     }
+    this.intervals = []
   }
 
   startTimer = (id) => {
@@ -20,17 +21,16 @@ export default class App extends Component {
       const updatedTaskData = prevState.tasks.map((task) => {
         if (task.id === id && !task.timerRunning) {
           const intervalId = setInterval(() => {
-            this.setState((prevState) => {
-              const updatedData = prevState.tasks.map((t) => {
+            this.setState((innerPrevState) => {
+              const updatedData = innerPrevState.tasks.map((t) => {
                 if (t.id === id) {
                   if (t.sec > 0) {
-                    t.sec -= 1
+                    return { ...t, sec: t.sec - 1 }
                   } else if (t.min > 0) {
-                    t.sec = 59
-                    t.min -= 1
+                    return { ...t, sec: 59, min: t.min - 1 }
                   } else {
-                    clearInterval(task.intervalId)
-                    t.timerRunning = false
+                    clearInterval(t.intervalId)
+                    return { ...t, timerRunning: false, intervalId: null }
                   }
                 }
                 return t
@@ -38,7 +38,7 @@ export default class App extends Component {
               return { tasks: updatedData }
             })
           }, 1000)
-
+          this.intervals.push(intervalId)
           return { ...task, timerRunning: true, intervalId }
         }
         return task
@@ -49,11 +49,11 @@ export default class App extends Component {
   }
 
   stopTimer = (id) => {
-    this.setState(({ tasks }) => {
-      const newArray = tasks.map((task) => {
+    this.setState((prevState) => {
+      const newArray = prevState.tasks.map((task) => {
         if (task.id === id && task.timerRunning) {
           clearInterval(task.intervalId)
-          task.timerRunning = false
+          return { ...task, timerRunning: false, intervalId: null }
         }
         return task
       })
@@ -80,12 +80,7 @@ export default class App extends Component {
   }
 
   componentWillUnmount() {
-    const { tasks } = this.state
-    tasks.forEach((task) => {
-      if (task.timerRunning) {
-        clearInterval(task.intervalId)
-      }
-    })
+    this.intervals.forEach(clearInterval)
   }
 
   addItem = (text, min, sec) => {
@@ -122,7 +117,7 @@ export default class App extends Component {
 
   editItem = (id, text) => {
     if (typeof text !== 'string') {
-      console.error('Label is not a string:', text)
+      console.error(`Label is not a string: ${text} (type: ${typeof text})`)
       return
     }
     this.setState((prevState) => ({

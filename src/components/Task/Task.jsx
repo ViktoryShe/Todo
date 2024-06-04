@@ -16,12 +16,15 @@ export default class Task extends Component {
       editing: !prevState.editing,
     }))
   }
-
   handleSubmit = (e) => {
     e.preventDefault()
     const { editItem } = this.props
     const { value } = this.state
-    editItem(this.props.id, value)
+    if (typeof value !== 'string') {
+      console.error(`Attempted to submit non-string text: ${value} (type: ${typeof value})`)
+      return
+    }
+    editItem(value)
     this.setState({ editing: false })
   }
 

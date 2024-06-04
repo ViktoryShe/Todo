@@ -19,7 +19,13 @@ export default class TaskList extends Component {
               {...itemProps}
               onDelete={() => onDelete(id)}
               onToggleCompleted={() => onToggleCompleted(id)}
-              editItem={(value) => editItem(id, value)}
+              editItem={(value) => {
+                if (typeof value !== 'string') {
+                  console.error(`Attempted to edit item with non-string text: ${value} (type: ${typeof value})`)
+                  return
+                }
+                editItem(id, value)
+              }}
               startTimer={() => startTimer(id)}
               stopTimer={() => stopTimer(id)}
             />
