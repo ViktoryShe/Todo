@@ -90,9 +90,24 @@ export default class App extends Component {
   }
 
   deleteItem = (id) => {
-    this.setState(({ tasks }) => ({
-      tasks: tasks.filter((task) => task.id !== id),
-    }))
+    this.setState(
+      (prevState) => {
+        const updatedTasks = prevState.tasks.map((task) => {
+          if (task.id === id && task.timerRunning) {
+            clearInterval(task.intervalId)
+            console.log(`Timer stopped for task with id ${id}`)
+            return { ...task, timerRunning: false, intervalId: null }
+          }
+          return task
+        })
+        return {
+          tasks: updatedTasks.filter((task) => task.id !== id),
+        }
+      },
+      () => {
+        console.log(`Task with id ${id} deleted`)
+      }
+    )
   }
 
   deleteCompleted = () => {

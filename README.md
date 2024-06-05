@@ -119,4 +119,7 @@ TODO App #5
 3. https://github.com/ViktoryShe/Todo/blob/main/src/App.jsx#L15 эти данные не нужно хранить в стейте компонента App.
 4. https://github.com/ViktoryShe/Todo/blob/main/src/App.jsx#L91C1-L94C4 этот метод не нужен в компоненте App.
 5. https://github.com/ViktoryShe/Todo/blob/main/src/components/TaskList/TaskList.jsx#L10 не нужно складывать тяжеловесные объекты jsx в переменные. Их стоит создавать в разметке. Плюс структурно такой код будет более читаем.
+
+6. При удалении таски с работающим таймером setInterval должен останавливаться.
+7. Организовать валидацию формы стандартными инструментами html.
 -->

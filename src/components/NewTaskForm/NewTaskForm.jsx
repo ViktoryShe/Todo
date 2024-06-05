@@ -8,84 +8,75 @@ export default class NewTaskForm extends Component {
     seconds: '',
   }
 
-  onLabelChange = (e) => {
-    this.setState({ label: e.target.value })
+  handleChange = (event) => {
+    this.setState({ [event.target.name]: event.target.value })
   }
 
-  onMinChange = (e) => {
-    if (e.target.value > 60 || e.target.value < 0) {
-      return
-    }
-    this.setState({
-      minutes: e.target.value,
-    })
-  }
-
-  onSecChange = (e) => {
-    if (e.target.value > 60 || e.target.value < 0) {
-      return
-    }
-    this.setState({
-      seconds: e.target.value,
-    })
-  }
-
-  onKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      this.onSubmit()
-      event.preventDefault()
-    }
-  }
-
-  onSubmit = () => {
+  handleSubmit = (event) => {
+    event.preventDefault()
     const { label, minutes, seconds } = this.state
 
-    if (label.trim() === '' || minutes.trim() === '' || seconds.trim() === '') {
+    if (!label.trim() || !minutes.trim() || !seconds.trim()) {
+      alert('Please fill out all fields.')
       return
-    } else if (isNaN(minutes) || isNaN(seconds)) {
-      this.setState({
-        label: '',
-        minutes: '',
-        seconds: '',
-      })
-    } else {
-      this.props.onItemAdd(label, Number(minutes), Number(seconds))
-
-      this.setState({
-        label: '',
-        minutes: '',
-        seconds: '',
-      })
     }
+
+    if (isNaN(minutes) || isNaN(seconds)) {
+      alert('Minutes and seconds must be numbers.')
+      return
+    }
+
+    if (minutes < 0 || minutes > 59 || seconds < 0 || seconds > 59) {
+      alert('Minutes and seconds must be between 0 and 59.')
+      return
+    }
+
+    this.props.onItemAdd(label, Number(minutes), Number(seconds))
+
+    this.setState({
+      label: '',
+      minutes: '',
+      seconds: '',
+    })
   }
 
   render() {
+    const { label, minutes, seconds } = this.state
     return (
       <header className="header">
         <h1>todos</h1>
-        <form className="new-todo-form">
+        <form className="new-todo-form" onSubmit={this.handleSubmit}>
           <input
             className="new-todo"
+            type="text"
+            name="label"
             placeholder="What needs to be done?"
             autoFocus
-            onChange={this.onLabelChange}
-            onKeyDown={this.onKeyDown}
-            value={this.state.label}
+            value={label}
+            onChange={this.handleChange}
+            required
           />
           <input
             className="new-todo-form__timer"
+            type="text"
+            name="minutes"
             placeholder="Min"
-            onChange={this.onMinChange}
-            onKeyDown={this.onKeyDown}
-            value={this.state.minutes}
+            value={minutes}
+            onChange={this.handleChange}
+            required
           />
           <input
             className="new-todo-form__timer"
+            type="text"
+            name="seconds"
             placeholder="Sec"
-            onChange={this.onSecChange}
-            value={this.state.seconds}
-            onKeyDown={this.onKeyDown}
+            value={seconds}
+            onChange={this.handleChange}
+            required
           />
+          <button type="submit" style={{ display: 'none' }}>
+            Add Task
+          </button>
         </form>
       </header>
     )
