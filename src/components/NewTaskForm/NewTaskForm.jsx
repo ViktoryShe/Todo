@@ -16,21 +16,6 @@ export default class NewTaskForm extends Component {
     event.preventDefault()
     const { label, minutes, seconds } = this.state
 
-    if (!label.trim() || !minutes.trim() || !seconds.trim()) {
-      alert('Please fill out all fields.')
-      return
-    }
-
-    if (isNaN(minutes) || isNaN(seconds)) {
-      alert('Minutes and seconds must be numbers.')
-      return
-    }
-
-    if (minutes < 0 || minutes > 59 || seconds < 0 || seconds > 59) {
-      alert('Minutes and seconds must be between 0 and 59.')
-      return
-    }
-
     this.props.onItemAdd(label, Number(minutes), Number(seconds))
 
     this.setState({
@@ -55,6 +40,7 @@ export default class NewTaskForm extends Component {
             value={label}
             onChange={this.handleChange}
             required
+            minLength="1"
           />
           <input
             className="new-todo-form__timer"
@@ -64,6 +50,10 @@ export default class NewTaskForm extends Component {
             value={minutes}
             onChange={this.handleChange}
             required
+            pattern="^([0-9]|[1-5][0-9])$"
+            min="0"
+            max="59"
+            title="Enter a valid number between 0 and 59"
           />
           <input
             className="new-todo-form__timer"
@@ -73,6 +63,10 @@ export default class NewTaskForm extends Component {
             value={seconds}
             onChange={this.handleChange}
             required
+            pattern="^([0-9]|[1-5][0-9])$"
+            min="0"
+            max="59"
+            title="Enter a valid number between 0 and 59"
           />
           <button type="submit" style={{ display: 'none' }}>
             Add Task
