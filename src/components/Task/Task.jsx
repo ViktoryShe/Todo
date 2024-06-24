@@ -6,15 +6,15 @@ import './Task.css'
 import { formatTimeDifference } from '../../utils'
 
 const Task = ({
-  id,
-  label,
+  label = '',
   created,
   onDelete,
   onToggleCompleted,
-  completed,
+  completed = false,
+  id,
+  editItem,
   min,
   sec,
-  editItem,
   startTimer,
   stopTimer,
 }) => {
@@ -31,10 +31,6 @@ const Task = ({
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (typeof value !== 'string') {
-      console.error(`Attempted to submit non-string text: ${value} (type: ${typeof value})`)
-      return
-    }
     editItem(value)
     setEditing(false)
   }
@@ -64,7 +60,7 @@ const Task = ({
       <div className="view">
         <input className="toggle" type="checkbox" checked={completed} readOnly />
         <label>
-          <span className="description">{label} </span>
+          <span className="description">{label}</span>
           <span className="description">
             <button className="icon icon-play" onClick={handlePlayTimer}></button>
             <button className="icon icon-pause" onClick={handleStopTimer}></button>
@@ -84,17 +80,6 @@ const Task = ({
       )}
     </li>
   )
-}
-
-Task.defaultProps = {
-  label: '',
-  created: '',
-  onDelete: () => {},
-  onToggleCompleted: () => {},
-  completed: false,
-  editItem: () => {},
-  startTimer: () => {},
-  stopTimer: () => {},
 }
 
 Task.propTypes = {

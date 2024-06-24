@@ -1,4 +1,4 @@
-# Ссылка на сайт https://todo-git-timer-viktoryshes-projects-7ec2f450.vercel.app/
+# Ссылка на сайт https://todo-git-hooks-viktoryshes-projects-7ec2f450.vercel.app/
 
 # Getting Started with Create React App
 

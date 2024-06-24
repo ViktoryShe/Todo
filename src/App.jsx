@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
 
 import TaskList from './components/TaskList/TaskList'
@@ -10,60 +10,47 @@ const App = () => {
   const [filter, setFilter] = useState('All')
   const intervals = []
 
-  const createTaskItem = (label, min, sec) => {
-    const id = Date.now()
-    return {
-      id,
-      label,
-      min,
-      sec,
-      createdData: new Date(),
-      editing: false,
-      completed: false,
-      created: new Date().toISOString(),
-      timerRunning: false,
-      intervalId: null,
+  useEffect(() => {
+    return () => {
+      intervals.forEach(clearInterval)
     }
+  }, [])
+
+  const startTimer = (id) => {
+    setTasks((prevState) => {
+      const updatedTaskData = prevState.map((task) => {
+        if (task.id === id && !task.timerRunning) {
+          const intervalId = setInterval(() => {
+            setTasks((innerPrevState) => {
+              const updatedData = innerPrevState.map((t) => {
+                if (t.id === id) {
+                  if (t.sec > 0) {
+                    return { ...t, sec: t.sec - 1 }
+                  } else if (t.min > 0) {
+                    return { ...t, sec: 59, min: t.min - 1 }
+                  } else {
+                    clearInterval(t.intervalId)
+                    return { ...t, timerRunning: false, intervalId: null }
+                  }
+                }
+                return t
+              })
+              return updatedData
+            })
+          }, 1000)
+          intervals.push(intervalId)
+          return { ...task, timerRunning: true, intervalId }
+        }
+        return task
+      })
+
+      return updatedTaskData
+    })
   }
 
-  const startTimer = useCallback(
-    (id) => {
-      setTasks((prevTasks) => {
-        const updatedTaskData = prevTasks.map((task) => {
-          if (task.id === id && !task.timerRunning) {
-            const intervalId = setInterval(() => {
-              setTasks((innerPrevTasks) => {
-                const updatedData = innerPrevTasks.map((t) => {
-                  if (t.id === id) {
-                    if (t.sec > 0) {
-                      return { ...t, sec: t.sec - 1 }
-                    } else if (t.min > 0) {
-                      return { ...t, sec: 59, min: t.min - 1 }
-                    } else {
-                      clearInterval(t.intervalId)
-                      return { ...t, timerRunning: false, intervalId: null }
-                    }
-                  }
-                  return t
-                })
-                return updatedData
-              })
-            }, 1000)
-            intervals.push(intervalId)
-            return { ...task, timerRunning: true, intervalId }
-          }
-          return task
-        })
-
-        return updatedTaskData
-      })
-    },
-    [intervals]
-  )
-
-  const stopTimer = useCallback((id) => {
-    setTasks((prevTasks) => {
-      const newArray = prevTasks.map((task) => {
+  const stopTimer = (id) => {
+    setTasks((prevState) => {
+      const newArray = prevState.map((task) => {
         if (task.id === id && task.timerRunning) {
           clearInterval(task.intervalId)
           return { ...task, timerRunning: false, intervalId: null }
@@ -72,21 +59,33 @@ const App = () => {
       })
       return newArray
     })
-  }, [])
+  }
 
-  useEffect(() => {
-    return () => {
-      intervals.forEach(clearInterval)
+  const createTaskItem = (label, min, sec) => {
+    const createdData = new Date()
+    const id = Date.now()
+
+    return {
+      id,
+      label,
+      min,
+      sec,
+      createdData,
+      editing: false,
+      completed: false,
+      created: new Date().toISOString(),
+      timerRunning: false,
+      intervalId: null,
     }
-  }, [intervals])
+  }
 
   const addItem = (text, min, sec) => {
     setTasks((prevTasks) => [...prevTasks, createTaskItem(text, min, sec)])
   }
 
   const deleteItem = (id) => {
-    setTasks((prevTasks) => {
-      const updatedTasks = prevTasks.map((task) => {
+    setTasks((prevState) => {
+      const updatedTasks = prevState.map((task) => {
         if (task.id === id && task.timerRunning) {
           clearInterval(task.intervalId)
           return { ...task, timerRunning: false, intervalId: null }
@@ -105,7 +104,10 @@ const App = () => {
     setTasks((prevTasks) =>
       prevTasks.map((item) => {
         if (item.id === id) {
-          return { ...item, completed: !item.completed }
+          return {
+            ...item,
+            completed: !item.completed,
+          }
         }
         return item
       })
@@ -120,7 +122,10 @@ const App = () => {
     setTasks((prevTasks) =>
       prevTasks.map((task) => {
         if (task.id === id) {
-          return { ...task, label: text }
+          return {
+            ...task,
+            label: text,
+          }
         }
         return task
       })
@@ -155,7 +160,7 @@ const App = () => {
         stopTimer={stopTimer}
       />
       <Footer
-        onRemaining={tasks.filter((el) => !el.completed).length}
+        onRemaining={tasks.length}
         filter={filter}
         onFilterChange={onFilterChange}
         onDeleteCompleted={deleteCompleted}

@@ -6,7 +6,7 @@ import TasksFilter from '../TasksFilter/TasksFilter'
 
 const FILTER_BUTTONS = [{ label: 'All' }, { label: 'Active' }, { label: 'Completed' }]
 
-const Footer = ({ onRemaining, filter, onFilterChange, onDeleteCompleted }) => (
+const Footer = ({ onRemaining, filter = 'All', onFilterChange = () => {}, onDeleteCompleted = () => {} }) => (
   <footer className="footer">
     <span className="todo-count">{onRemaining} items left</span>
     <TasksFilter filter={filter} onFilterChange={onFilterChange} buttons={FILTER_BUTTONS} />
@@ -15,12 +15,6 @@ const Footer = ({ onRemaining, filter, onFilterChange, onDeleteCompleted }) => (
     </button>
   </footer>
 )
-
-Footer.defaultProps = {
-  filter: 'All',
-  onDeleteCompleted: () => {},
-  onFilterChange: () => {},
-}
 
 Footer.propTypes = {
   onRemaining: PropTypes.number.isRequired,
