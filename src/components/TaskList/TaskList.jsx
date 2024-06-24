@@ -1,40 +1,34 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import './TaskList.css'
 
+import './TaskList.css'
 import Task from '../Task/Task'
 
-export default class TaskList extends Component {
-  render() {
-    const { tasks, onDelete, onToggleCompleted, editItem, startTimer, stopTimer } = this.props
-
-    return (
-      <ul className="todo-list">
-        {tasks.map((task) => {
-          const { id, ...itemProps } = task
-          return (
-            <Task
-              key={id}
-              id={id}
-              {...itemProps}
-              onDelete={() => onDelete(id)}
-              onToggleCompleted={() => onToggleCompleted(id)}
-              editItem={(value) => {
-                if (typeof value !== 'string') {
-                  console.error(`Attempted to edit item with non-string text: ${value} (type: ${typeof value})`)
-                  return
-                }
-                editItem(id, value)
-              }}
-              startTimer={() => startTimer(id)}
-              stopTimer={() => stopTimer(id)}
-            />
-          )
-        })}
-      </ul>
-    )
-  }
-}
+const TaskList = ({ tasks, onDelete, onToggleCompleted, editItem, startTimer, stopTimer }) => (
+  <ul className="todo-list">
+    {tasks.map((task) => {
+      const { id, ...itemProps } = task
+      return (
+        <Task
+          key={id}
+          id={id}
+          {...itemProps}
+          onDelete={() => onDelete(id)}
+          onToggleCompleted={() => onToggleCompleted(id)}
+          editItem={(value) => {
+            if (typeof value !== 'string') {
+              console.error(`Attempted to edit item with non-string text: ${value} (type: ${typeof value})`)
+              return
+            }
+            editItem(id, value)
+          }}
+          startTimer={() => startTimer(id)}
+          stopTimer={() => stopTimer(id)}
+        />
+      )
+    })}
+  </ul>
+)
 
 TaskList.defaultProps = {
   tasks: [],
@@ -60,3 +54,5 @@ TaskList.propTypes = {
   startTimer: PropTypes.func.isRequired,
   stopTimer: PropTypes.func.isRequired,
 }
+
+export default TaskList

@@ -1,90 +1,89 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import './Task.css'
 import { formatTimeDifference } from '../../utils'
 
-export default class Task extends Component {
-  state = {
-    editing: false,
-    value: this.props.label,
+const Task = ({
+  id,
+  label,
+  created,
+  onDelete,
+  onToggleCompleted,
+  completed,
+  min,
+  sec,
+  editItem,
+  startTimer,
+  stopTimer,
+}) => {
+  const [editing, setEditing] = useState(false)
+  const [value, setValue] = useState(label)
+
+  useEffect(() => {
+    setValue(label)
+  }, [label])
+
+  const handleToggleEditing = () => {
+    setEditing(!editing)
   }
 
-  handleToggleEditing = () => {
-    this.setState((prevState) => ({
-      editing: !prevState.editing,
-    }))
-  }
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-    const { editItem } = this.props
-    const { value } = this.state
     if (typeof value !== 'string') {
       console.error(`Attempted to submit non-string text: ${value} (type: ${typeof value})`)
       return
     }
     editItem(value)
-    this.setState({ editing: false })
+    setEditing(false)
   }
 
-  handleChange = (event) => {
-    this.setState({ value: event.target.value })
+  const handleChange = (event) => {
+    setValue(event.target.value)
   }
 
-  handlePlayTimer = (e) => {
+  const handlePlayTimer = (e) => {
     e.stopPropagation()
-    const { id, startTimer } = this.props
     startTimer(id)
   }
 
-  handleStopTimer = (e) => {
+  const handleStopTimer = (e) => {
     e.stopPropagation()
-    const { id, stopTimer } = this.props
     stopTimer(id)
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.label !== this.props.label) {
-      this.setState({ value: this.props.label })
-    }
-  }
+  const timeDifference = formatTimeDifference(created)
+  const listItemClasses = classNames({
+    completed: completed,
+    editing: editing,
+  })
 
-  render() {
-    const { label, created, onDelete, onToggleCompleted, completed, min, sec } = this.props
-    const { editing, value } = this.state
-    const timeDifference = formatTimeDifference(created)
-    const listItemClasses = classNames({
-      completed: completed,
-      editing: editing,
-    })
-
-    return (
-      <li className={listItemClasses} onClick={onToggleCompleted}>
-        <div className="view">
-          <input className="toggle" type="checkbox" checked={completed} readOnly />
-          <label>
-            <span className="description">{label} </span>
-            <span className="description">
-              <button className="icon icon-play" onClick={this.handlePlayTimer}></button>
-              <button className="icon icon-pause" onClick={this.handleStopTimer}></button>
-              <span className="timer">
-                {min}:{sec}
-              </span>
+  return (
+    <li className={listItemClasses} onClick={onToggleCompleted}>
+      <div className="view">
+        <input className="toggle" type="checkbox" checked={completed} readOnly />
+        <label>
+          <span className="description">{label} </span>
+          <span className="description">
+            <button className="icon icon-play" onClick={handlePlayTimer}></button>
+            <button className="icon icon-pause" onClick={handleStopTimer}></button>
+            <span className="timer">
+              {min}:{sec}
             </span>
-            <span className="created description">{timeDifference}</span>
-          </label>
-          <button className="icon icon-edit" onClick={this.handleToggleEditing}></button>
-          <button className="icon icon-destroy" onClick={onDelete}></button>
-        </div>
-        {editing && (
-          <form onSubmit={this.handleSubmit}>
-            <input type="text" className="edit" value={value} onChange={this.handleChange} onBlur={this.handleSubmit} />
-          </form>
-        )}
-      </li>
-    )
-  }
+          </span>
+          <span className="created description">{timeDifference}</span>
+        </label>
+        <button className="icon icon-edit" onClick={handleToggleEditing}></button>
+        <button className="icon icon-destroy" onClick={onDelete}></button>
+      </div>
+      {editing && (
+        <form onSubmit={handleSubmit}>
+          <input type="text" className="edit" value={value} onChange={handleChange} onBlur={handleSubmit} />
+        </form>
+      )}
+    </li>
+  )
 }
 
 Task.defaultProps = {
@@ -111,3 +110,5 @@ Task.propTypes = {
   startTimer: PropTypes.func.isRequired,
   stopTimer: PropTypes.func.isRequired,
 }
+
+export default Task
